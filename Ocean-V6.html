@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>OCEAN V6 • GET CODE</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, monospace;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .video-bg-login {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: -1;
+        }
+
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            background: transparent;
+        }
+
+        .login-card {
+            background: rgba(15, 40, 55, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            border: 1px solid rgba(0, 210, 220, 0.6);
+            padding: 40px 35px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .login-card h2 {
+            color: #5bc0ff;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .login-card p {
+            color: #b9f2ff;
+            margin-bottom: 30px;
+            font-size: 0.85rem;
+        }
+
+        .input-icon-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .input-icon-wrapper i {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5bc0ff;
+            font-style: normal;
+            font-size: 1.1rem;
+            z-index: 1;
+        }
+
+        .input-icon-wrapper input {
+            width: 100%;
+            padding: 14px 48px 14px 18px;
+            background: rgba(0, 30, 45, 0.8);
+            border: 1px solid rgba(0, 180, 200, 0.7);
+            border-radius: 60px;
+            color: #e2f5ff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-icon-wrapper input:focus {
+            border-color: #2ce2ff;
+            box-shadow: 0 0 12px rgba(44, 226, 255, 0.5);
+        }
+
+        .remember-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 30px 0;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #b9f2ff;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #00a8c5;
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 14px;
+            background: radial-gradient(circle at 30% 10%, #0088aa, #005a73);
+            border: none;
+            border-radius: 60px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: all 0.25s;
+        }
+
+        .login-card button:hover {
+            transform: scale(1.02);
+            background: radial-gradient(circle at 30% 10%, #00aacc, #007a99);
+        }
+
+        .login-message {
+            color: #ffcc00;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .login-message.success { color: #00ff88; }
+        .login-message.error { color: #ff6b6b; }
+
+        .register-link {
+            text-align: center;
+            color: #b9f2ff;
+            font-size: 0.85rem;
+        }
+
+        .register-link a {
+            color: #5bc0ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(15, 40, 55, 0.65);
+            backdrop-filter: blur(14px);
+            border-radius: 48px;
+            border: 1px solid rgba(0, 210, 220, 0.5);
+            padding: 30px 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.3rem;
+            margin-bottom: 8px;
+            background: linear-gradient(125deg, #5bc0ff, #00a8c5, #005f73);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sub {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #b9f2ff;
+            font-size: 0.85rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-group input {
+            flex: 2;
+            padding: 14px 20px;
+            background: rgba(0, 30, 45, 0.7);
+            border: 1px solid rgba(0, 180, 200, 0.7);
+            border-radius: 60px;
+            color: #e2f5ff;
+            font-size: 14px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #2ce2ff;
+            box-shadow: 0 0 12px rgba(44, 226, 255, 0.5);
+        }
+
+        .btn-ocean {
+            background: radial-gradient(circle at 30% 10%, #0088aa, #005a73);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.25s;
+            box-shadow: 0 5px 12px rgba(0, 100, 120, 0.4);
+        }
+
+        .btn-ocean:hover {
+            transform: scale(1.02);
+            background: radial-gradient(circle at 30% 10%, #00aacc, #007a99);
+        }
+
+        .btn-boost {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #ffcc00;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: bold;
+            color: #ffcc00;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-boost.active {
+            background: #ffcc00;
+            color: #000;
+            border-color: #ffcc00;
+            box-shadow: 0 0 12px #ffcc00;
+        }
+
+        .result {
+            margin-top: 30px;
+            background: rgba(0, 20, 30, 0.65);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            border: 1px solid rgba(0, 190, 210, 0.6);
+            padding: 20px 24px;
+            display: block;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #2bc8e0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-hapus {
+            background: rgba(255, 100, 100, 0.8);
+            border: 1px solid #ff6666;
+            padding: 6px 14px;
+            border-radius: 60px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            display: none;
+        }
+
+        .btn-hapus:hover {
+            background: #ff4444;
+            transform: scale(1.02);
+        }
+
+        .status-code {
+            color: #ffdb7e;
+            background: rgba(0,0,0,0.4);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+        }
+
+        pre {
+            background: #011118;
+            padding: 16px;
+            border-radius: 24px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            color: #b3f0ff;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 320px;
+            overflow: auto;
+        }
+
+        .footer-info {
+            margin-top: 18px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #a0e0ff;
+        }
+
+        .status-ready {
+            color: #90ff90;
+        }
+
+        .error {
+            color: #ffb4a2;
+            margin-top: 12px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 640px) {
+            .input-group { flex-direction: column; }
+            .result-header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <video class="video-bg-login" id="bgVideoLogin" autoplay loop playsinline>
+        <source src="https://files.catbox.moe/zwyi6p.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
+    <div class="login-container" id="loginContainer">
+        <div class="login-card">
+            <h2>LOGIN</h2>
+            <p>Welcome back</p>
+
+            <div class="input-icon-wrapper">
+                <i>👤</i>
+                <input type="text" id="loginUsername" placeholder="Username" autocomplete="off">
+            </div>
+
+            <div class="input-icon-wrapper">
+                <i>🔒</i>
+                <input type="password" id="loginPassword" placeholder="Token">
+            </div>
+
+            <div class="remember-row">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="rememberCheckbox" onclick="toggleRememberMe()"> Remember me
+                </label>
+            </div>
+
+            <button onclick="doLogin()">SIGN IN</button>
+
+            <div class="register-link">
+                Don't have an account? <a href="#" onclick="alert('Fitur register belum tersedia')">Register</a>
+            </div>
+
+            <div id="loginMessage" class="login-message"></div>
+        </div>
+    </div>
+
+    <div class="dashboard" id="dashboard">
+        <div class="container">
+            <h1>GET CODE GENERATOR</h1>
+            <div class="sub">codetabs.com</div>
+
+            <div class="input-group">
+                <input type="text" id="urlInput" placeholder="https://example.com" value="https://example.com">
+                <button class="btn-ocean" onclick="fetchCode()">🌊 AMBIL KODE</button>
+                <button id="boostBtn" class="btn-boost" onclick="toggleBoost()">⚡ BOOST LINK OFF</button>
+            </div>
+
+            <div class="result">
+                <div class="result-header">
+                    <span class="status-code" id="statusCodeText">📡 Status Code: -</span>
+                    <div class="btn-group">
+                        <button class="btn-ocean" id="copyBtn" onclick="copyCode()" style="padding: 6px 18px;">📋 Salin Kode</button>
+                        <button class="btn-hapus" id="hapusBtn" onclick="hapusCode()">🗑️ Hapus Code♨️</button>
+                    </div>
+                </div>
+                <pre id="codeOutput">Kosong. Klik ambil kode.</pre>
+                <div class="footer-info">
+                    <span id="adminText">Admin: Ndikoy🪼</span>
+                    <span id="statusResult" class="status-ready">Status Code: Ready✅</span>
+                </div>
+            </div>
+            <div id="error" class="error"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('bgVideoLogin');
+            if (video) {
+                video.play().catch(e => {
+                    document.body.addEventListener('click', function playOnce() {
+                        video.play();
+                        document.body.removeEventListener('click', playOnce);
+                    });
+                });
+            }
+        });
+
+        function toggleRememberMe() {
+            const checkbox = document.getElementById('rememberCheckbox');
+            const tokenInput = document.getElementById('loginPassword');
+            tokenInput.type = checkbox.checked ? 'text' : 'password';
+        }
+
+        function doLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const token = document.getElementById('loginPassword').value.trim();
+            const messageDiv = document.getElementById('loginMessage');
+
+            if (username === 'Ocean V6' && token === 'Wave') {
+                messageDiv.innerHTML = '✅ Login berhasil! Mengalihkan...';
+                messageDiv.className = 'login-message success';
+                setTimeout(() => {
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('dashboard').classList.add('active');
+                }, 500);
+            } else {
+                messageDiv.innerHTML = '❌ Username atau Token salah!';
+                messageDiv.className = 'login-message error';
+            }
+        }
+
+        let boostActive = false;
+        const boostBtn = document.getElementById('boostBtn');
+
+        function toggleBoost() {
+            boostActive = !boostActive;
+            boostBtn.innerHTML = boostActive ? '⚡ BOOST LINK ON 🔥' : '⚡ BOOST LINK OFF';
+            boostBtn.classList.toggle('active', boostActive);
+        }
+
+        async function fetchCode() {
+            const url = document.getElementById('urlInput').value.trim();
+            const codeOutput = document.getElementById('codeOutput');
+            const statusCodeSpan = document.getElementById('statusCodeText');
+            const errorDiv = document.getElementById('error');
+            const hapusBtn = document.getElementById('hapusBtn');
+
+            if (!url) {
+                errorDiv.textContent = 'Masukkan URL!';
+                return;
+            }
+            errorDiv.textContent = '';
+            codeOutput.textContent = 'Mengambil data...';
+            statusCodeSpan.innerHTML = '⏳ Fetching...';
+            hapusBtn.style.display = 'none';
+
+            let proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`;
+            if (boostActive) proxyUrl += `&boost=${Date.now()}`;
+
+            try {
+                const timeoutMs = boostActive ? 8000 : 20000;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+                const response = await fetch(proxyUrl, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const html = await response.text();
+                codeOutput.textContent = html;
+                statusCodeSpan.innerHTML = '✅ Status Code: Success 🍀';
+                errorDiv.textContent = '';
+                hapusBtn.style.display = 'inline-block';
+            } catch (err) {
+                codeOutput.textContent = `GAGAL: ${err.message}`;
+                statusCodeSpan.innerHTML = '❌ Status Code: Failed';
+                errorDiv.textContent = `Error: ${err.message}`;
+                hapusBtn.style.display = 'none';
+            }
+        }
+
+        function hapusCode() {
+            document.getElementById('codeOutput').textContent = 'Kosong. Klik ambil kode.';
+            document.getElementById('statusCodeText').innerHTML = '📡 Status Code: -';
+            document.getElementById('hapusBtn').style.display = 'none';
+        }
+
+        // ========== COPY CODE YANG PASTI JALAN DI APK ==========
+        function copyCode() {
+            const codeText = document.getElementById('codeOutput').textContent;
+            
+            if (!codeText || codeText.includes('GAGAL') || codeText.includes('Kosong') || codeText.includes('Mengambil data')) {
+                alert('Tidak ada kode yang bisa disalin.');
+                return;
+            }
+            
+            // METODE AMAN UNTUK WEBVIEW APK
+            const textarea = document.createElement('textarea');
+            textarea.value = codeText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            
+            try {
+                const success = document.execCommand('copy');
+                if (success) {
+                    const btn = document.getElementById('copyBtn');
+                    const original = btn.innerHTML;
+                    btn.innerHTML = '✅ Tersalin!';
+                    setTimeout(() => btn.innerHTML = original, 1500);
+                } else {
+                    alert('Gagal menyalin. Silakan copy manual.');
+                }
+            } catch (err) {
+                alert('Gagal menyalin: ' + err.message);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+    </script>
+</body>
+</html>
